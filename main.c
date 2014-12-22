@@ -39,6 +39,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <unistd.h> /* getopt */
 #include <ncurses.h>
+#include "generate.h"
+
 
 /* DEFINES */
 #define VERSION				"0.1"
@@ -241,7 +243,7 @@ void fill_grid(void)
 	}
 }
 
-int main(int argc, char *argv[])
+int main2(int argc, char *argv[])
 {
 	bool run = true;
 	int key, x, y;
@@ -318,3 +320,23 @@ int main(int argc, char *argv[])
 	return EXIT_SUCCESS;
 }
 
+/* void pointTest(char** board) {
+ *   board[3][2]<
+ *}
+ */
+    
+
+int main(){
+	init_board(EXAMPLE_STREAM);
+    Point* pos = malloc(sizeof(Point));
+    printf("%p",pos);
+    fflush(stdout);
+    nextCellToFill(board, pos);
+    printf("%p",pos);
+    fflush(stdout);
+    solve(board);
+
+
+
+    return 0;
+}
