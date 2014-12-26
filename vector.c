@@ -59,6 +59,9 @@ void vector_delete_element(vector* v, int index)
 
 bool vector_delete_element_with_value(vector* v, void* value){
     int i;
+    if (v == NULL)
+        return false;
+
     for (i = 0; i < v->size; i++) {
         if (v->data[i] == value) {
             vector_delete_element(v, i);

@@ -1,7 +1,7 @@
 all: compile run
 
 compile: main.c generate.c	
-	gcc -g -o output main.c generate.c -lncurses
+	gcc -g -o output main.c vector.c generate.c -lncurses
 
 run:
 	./output

@@ -57,12 +57,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define GRID_LINE_DELTA		4
 #define GRID_COL_DELTA		2
 
-#define EXAMPLE_STREAM "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"
+#define EXAMPLE_STREAM "4.....8.5.3..........7......2.....6......8.4......1.......6.3.7.5..2.....1.4......"
 
 /* GLOBALS */
 bool g_useColor = true;
 WINDOW *grid, *infobox;
 char board[9][9];
+char chars[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+vector* possibilities[9][9];
 
 /* FUNCTIONS */
 void print_version(void)
@@ -327,10 +329,58 @@ int main2(int argc, char *argv[])
     
 
 int main(){
+    int row,col,i, j;
+
 	init_board(EXAMPLE_STREAM);
+
+    for (i = 0; i<9; i++)
+    {
+        for (j = 0; j<9; j++)
+        {
+            printf("%c ", board[i][j]);
+        }
+        printf("\n");
+    }
+
+
+    for (col = 0; col < 9; col++) {
+        for (row = 0; row < 9; row++) {
+            if (board[col][row] == '.') {
+                possibilities[col][row] = vector_init(9);
+                // if (row == 8 && col == 8)
+                    printf("%p \n", possibilities[8][8]);
+                for (i = 0; i < 9; i++) {
+
+                    vector_add_element(possibilities[col][row], (void*) (unsigned long) chars[i]);
+                    // possibilities[col][row]->data[i] = (void*)(unsigned long) chars[i];
+
+                }
+            }
+        }
+    }
+    printf("%p \n", possibilities[8][8]);
+    fflush(stdout);
+    printf("%d \n", possibilities[8][8]->count);
+
+    for(i=0; i < possibilities[8][8]->count; i++) {
+        printf("%c ", (int)possibilities[8][8]->data[i]);
+    }
+    printf("\n");
+
+
+    getPossibilities(board, possibilities);
+
+    for(i=0; i < possibilities[8][8]->count; i++) {
+        printf("%c ", (int)possibilities[8][8]->data[i]);
+    }
+    printf("\n");
+    fflush(stdout);
+
+    // getPossibilities(board, );
     Point* pos = malloc(sizeof(Point));
-    nextCellToFill(board, pos);
-    solve(board);
+
+    // nextCellToFill(board, pos);
+    // solve(board);
 
     return EXIT_SUCCESS;
 }

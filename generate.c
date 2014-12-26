@@ -18,7 +18,7 @@ bool nextCellToFill(char board[9][9], Point* position) {
     return false;
 }
 
-char getNumberToInsert(char board[9][9], char possibilities[9][9], Point* position,){
+vector* getNumberToInsert(char board[9][9], vector* possibilities[9][9], Point* position){
     // loop over everything that is still possible
     // insert first one (something smarter is also possible)
    
@@ -32,8 +32,8 @@ char getNumberToInsert(char board[9][9], char possibilities[9][9], Point* positi
 void getPossibilities(char board[9][9], vector* possibilities[9][9]){
     // calc possibilities with board
     
-    int i, j, row, col;
-    vector* testVect
+    int i, j, k, row, col;
+
     // loop over all fixed board numbers to initialize possibilities
     for (row = 0; row < 9; row ++){
         for (col = 0; col < 9; col ++) {
@@ -42,17 +42,39 @@ void getPossibilities(char board[9][9], vector* possibilities[9][9]){
                 // Null or 'x' for no possibility? choose Null;
 
                 // check current col
-                for (i = 1; i < 9 i++)
-                    vector_delete_element_with_value(possibilities[(col + i) % 9][row], board[col][row])
+                for (i = 1; i < 9; i++)
+                {
+                    vector_delete_element_with_value(possibilities[row][(col + i) % 9], (void*)(unsigned long) board[col][row]);
+                    if (row == 8 && (col + i)%9 == 8)
+                    {
+                        printf("deleting %c from clolumn %d \n", board[col][row], col);
+                        for(k=0; k < possibilities[8][8]->count; k++) {
+                            printf("%c ", (int)possibilities[8][8]->data[k]);
+                        }
+                        printf("\n");
+                    }
+
+                }
 
                 // check current row
-                for (i = 1; i < 9 i++)
-                    vector_delete_element_with_value(possibilities[(col)][(row + i) % 9], board[col][row])
+                for (i = 1; i < 9; i++)
+                {
+                    vector_delete_element_with_value(possibilities[(row + i) % 9][(col)], (void*)(unsigned long) board[col][row]);
+                    if ((row + i) % 9 == 8 && col  == 8)
+                    {
+                        printf("deleting %c from row %d \n", board[col][row], row);
+                        for(k=0; k < possibilities[8][8]->count; k++) {
+                            printf("%c ", (int)possibilities[8][8]->data[k]);
+                        }
+                        printf("\n");
+
+                    }
+                }
 
                 // check current box
-                for (i = (col/3)*3, i < (col/3 + 1)*3, i++){
-                    for (j = (row/3)*3, j < (row/3 +1)*3, j++){
-                        vector_delete_element_with_value(possibilities[(col)][(row + i) % 9], board[col][row])
+                for (i = (col/3)*3; i < (col/3 + 1)*3; i++){
+                    for (j = (row/3)*3; j < (row/3 + 1)*3; j++){
+                        // vector_delete_element_with_value(possibilities[(col + i )][(row + j)], (void*)(unsigned long) board[col][row]);
                     }
                 }
 
@@ -64,10 +86,10 @@ void getPossibilities(char board[9][9], vector* possibilities[9][9]){
 }
 
 bool solve(char board[9][9]) {
-    vector possibilities[9][9];
-    char options;
+    vector* possibilities[9][9];
+    vector* options;
 
-    int col, row;
+    int col, row, i;
     Point pos;
     pos.x = 0;
     pos.y = 0;
@@ -76,13 +98,14 @@ bool solve(char board[9][9]) {
         // printf("position %d, %d, value %c \n", row, col, board[row][col]);
         // options is a vector
         options = getNumberToInsert(board, possibilities, &pos);
-        while (options.next) {
-            board[pos.x][pos.y] = options;
+        for (i = 0; i < options->count; i++) {
+            // is that transformation correct?
+            board[pos.x][pos.y] = (char)(unsigned long) options->data[i];
             // solve cells that are currently empty
             if (solve(board)== true)
                 return true;
         }
-        return false
+        return false;
     }
 
     return true;

@@ -5,7 +5,7 @@ int main()
 	int i;
 	char c = 'a';
 
-	vector *v = init_vector(5);
+	vector *v = vector_init(5);
 	if (v)
 	{
 		for(i=0; i < 6; i++)
@@ -24,8 +24,8 @@ int main()
 
 		vector_free(v);
 
-		v = init_vector(5);
-		for(i=0; i < v->size; i++)
+		v = vector_init(5);
+		for(i=0; i < v->count; i++)
 		{
 			if (!vector_add_element(v, (void*)(unsigned long)c))
 				printf("error while adding element");
