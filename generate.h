@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h> /* getopt */
+#include <stdbool.h>
 
 char* generate();
 
@@ -20,7 +20,7 @@ struct possibilities {
 
 typedef struct possibilities Possibility;
 
-char** solve(char[9][9]);
-void nextCellToFill(char[9][9], Point*);
+bool solve(char[9][9]);
+bool nextCellToFill(char[9][9], Point*);
   
 #endif // GENERATE_C

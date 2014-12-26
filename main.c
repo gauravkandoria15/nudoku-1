@@ -329,14 +329,8 @@ int main2(int argc, char *argv[])
 int main(){
 	init_board(EXAMPLE_STREAM);
     Point* pos = malloc(sizeof(Point));
-    printf("%p",pos);
-    fflush(stdout);
     nextCellToFill(board, pos);
-    printf("%p",pos);
-    fflush(stdout);
     solve(board);
 
-
-
-    return 0;
+    return EXIT_SUCCESS;
 }
