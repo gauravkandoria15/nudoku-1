@@ -63,7 +63,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 bool g_useColor = true;
 WINDOW *grid, *infobox;
 char board[9][9];
-char chars[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 vector* possibilities[9][9];
 
 /* FUNCTIONS */
@@ -343,28 +342,12 @@ int main(){
     }
 
 
-    for (col = 0; col < 9; col++) {
-        for (row = 0; row < 9; row++) {
-            if (board[row][col] == '.') {
-                possibilities[row][col] = vector_init(9);
-                // if (row == 8 && col == 8)
-                for (i = 0; i < 9; i++) {
-
-                    vector_add_element(possibilities[row][col], (void*) (unsigned long) chars[i]);
-                    // possibilities[row][col]->data[i] = (void*)(unsigned long) chars[i];
-
-                }
-            }
-        }
-    }
     printf("\n");
 
     // printf("%p \n", possibilities[8][8]);
     // fflush(stdout);
     // printf("%d \n", possibilities[8][8]->count);
     
-    vector_print_char(possibilities[8][8]);
-
 
     getPossibilities(board, possibilities);
 
@@ -374,7 +357,7 @@ int main(){
     point* pos = malloc(sizeof(point));
 
     // nextCellToFill(board, pos);
-    // solve(board);
+    solve(board);
 
     return EXIT_SUCCESS;
 }
