@@ -21,5 +21,6 @@ void vector_free(vector *v);
 bool vector_delete_element_with_value(vector* v, void* value);
 void vector_print_char(vector* v);
 void vector_print_int(vector* v);
+vector* vector_copy(vector* v);
 
 #endif // vector_c

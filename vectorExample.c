@@ -6,6 +6,7 @@ int main()
 	char c = 'a';
 
 	vector *v = vector_init(9);
+	vector *v2;
 	if (v)
 	{
 		for(i=0; i < 9; i++)
@@ -23,6 +24,23 @@ int main()
         vector_delete_element_with_value(v, (void*)(unsigned long) '1');
         vector_delete_element_with_value(v, (void*)(unsigned long) '9');
         vector_print_char(v);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '8');
+        vector_print_char(v);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '7');
+        vector_print_char(v);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '3');
+        vector_print_char(v);
+        v2 = vector_copy(v);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '3');
+        vector_print_char(v);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '6');
+        vector_print_char(v);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '5');
+        vector_print_char(v);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '4');
+        vector_print_char(v);
+        vector_print_char(v2);
+        printf("count: %d, size: %d\n", v2->count, v2->size);
         // vector_delete_element_with_value(v, (void*)(unsigned long) '2');
 		vector_free(v);
 

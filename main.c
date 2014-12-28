@@ -57,12 +57,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define GRID_LINE_DELTA		4
 #define GRID_COL_DELTA		2
 
-#define EXAMPLE_STREAM "4.....8.5.3..........7......2.....6.....8.4......1.......6.32785..2.....1.4......"
+#define EXAMPLE_STREAM            "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"
+#define EXAMPLE_STREAM_SOLVED     "417369825632158947958724316825437169791586432346912758289643571573291684164875293"
+#define EXAMPLE_STREAM_WRONG_ROW  "147369825632158947958724316825437169791586432346912758289643571573291684164875293"
+#define EXAMPLE_STREAM_WRONG_COL  "617369825432158947958724316825437169791586432346912758289643571573291684164875293"
+#define EXAMPLE_STREAM_WRONG_BOX  "517369824632158947958724316825437169791586432346912758289643571473291685164875293"
+
+
 
 /* GLOBALS */
 bool g_useColor = true;
 WINDOW *grid, *infobox;
 char board[9][9];
+char boardSolved[9][9];
+char boardWrongRow[9][9];
+char boardWrongCol[9][9];
+char boardWrongBox[9][9];
+
 vector* possibilities[9][9];
 
 /* FUNCTIONS */
@@ -206,7 +217,7 @@ void init_windows(void)
 }
 
 /*TODO: so far just ignoring longer stream. maybe check for 81*/
-bool init_board(char *stream)
+bool init_board(char *stream, char board[9][9])
 {
 	int row, col;
 
@@ -254,7 +265,7 @@ int main2(int argc, char *argv[])
 
 	init_windows();
 
-	init_board(EXAMPLE_STREAM);
+	init_board(EXAMPLE_STREAM, board);
 	fill_grid();
 
 	refresh();
@@ -330,19 +341,20 @@ int main2(int argc, char *argv[])
 int main(){
     int row,col,i, j;
 
-	init_board(EXAMPLE_STREAM);
+	init_board(EXAMPLE_STREAM, board);
+    printBoard(board);
 
-    for (i = 0; i<9; i++)
-    {
-        for (j = 0; j<9; j++)
-        {
-            printf("%c ", board[i][j]);
-        }
-        printf("\n");
-    }
+	init_board(EXAMPLE_STREAM_SOLVED, boardSolved);
+    printBoard(boardSolved);
 
+	init_board(EXAMPLE_STREAM_WRONG_ROW, boardWrongRow);
+    printBoard(boardWrongRow);
 
-    printf("\n");
+	init_board(EXAMPLE_STREAM_WRONG_COL, boardWrongCol);
+    printBoard(boardWrongCol);
+
+	init_board(EXAMPLE_STREAM_WRONG_BOX, boardWrongBox);
+    printBoard(boardWrongBox);
 
     // printf("%p \n", possibilities[8][8]);
     // fflush(stdout);
@@ -357,6 +369,14 @@ int main(){
     point* pos = malloc(sizeof(point));
 
     // nextCellToFill(board, pos);
+    //
+    // printf("board %d\n", (int) checkBoard(board));
+    printf("board solved %d\n", (int) checkBoard(boardSolved));
+    // printf("board wrong row %d\n", (int) checkBoard(boardWrongRow));
+    // printf("board wrong col %d\n", (int) checkBoard(boardWrongCol));
+    // printf("board wrong box %d\n", (int) checkBoard(boardWrongBox));
+
+    return 0;
     solve(board);
 
     return EXIT_SUCCESS;

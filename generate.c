@@ -3,6 +3,19 @@
 
 bool debug = false;
 
+void printBoard(char board[9][9]) {
+    int i, j;
+    for (i = 0; i<9; i++)
+    {
+        for (j = 0; j<9; j++)
+        {
+            printf("%c ", board[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* position) {
 
     // return false if: no more possibilities to fill. this can be if the board is full, or there is no way to complete the board. 
@@ -28,9 +41,9 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* positi
                     position->y = row;
 
                     if (debug) {
-                    printf("least %d, pos %d,%d \n",least, row, col);
-                    printf("test %p\n",position);
-                    fflush(stdout);
+                        printf("least %d, pos %d,%d \n",least, row, col);
+                        printf("test %p\n",position);
+                        fflush(stdout);
                     }
                 }
             }
@@ -133,31 +146,113 @@ void getPossibilities(char board[9][9], vector* possibilities[9][9]){
 
 }
 
+bool checkBoard(char board[9][9]) {
+    // check consistency of board.
+    int i, j, row,col;
+
+    char chars[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    vector* values = vector_init(9);
+    vector* tmp;
+    for (i = 0; i < 9; i++) {
+        vector_add_element(values, (void*) (unsigned long) chars[i]);
+    }
+
+    tmp = vector_copy(values);
+
+
+    // check rows
+    printf("checking row: ");
+    for (row = 0; row < 9; row ++){
+        printf ("%d ", row);
+        for (col = 0; col < 9; col ++) {
+            // printf("deleting %c from:",board[row][col]);
+            // vector_print_char(tmp);
+            vector_delete_element_with_value(tmp, (void*) (unsigned long) board[row][col]);
+        }
+        if (tmp->count != 0){
+            printf("(%d, %d), row wrong\n", row, col);
+            return false;
+        }
+        vector_free(tmp);
+        tmp = vector_copy(values);
+    }
+    printf ("\n");
+
+    printf("checking col: ");
+    // check cols
+    for (col = 0; col < 9; col ++) {
+        printf ("%d ", col);
+        for (row = 0; row < 9; row ++){
+            vector_delete_element_with_value(tmp, (void*) (unsigned long) board[row][col]);
+        }
+        if (tmp->count != 0) {
+            printf("(%d, %d), col wrong\n", row, col);
+            return false;
+        }
+        vector_free(tmp);
+        tmp = vector_copy(values);
+    }
+    printf ("\n");
+
+    // check boxes
+    printf("checking box: ");
+    for (i = 0; i < 9; i += 3) {
+        for (j = 0; j < 9; j += 3) {
+            printf ("(%d,%d) ", i,j);
+            for (row = i; row < i + 3; row++) {
+                for (col = j; col < j + 3; col++) {
+                    vector_delete_element_with_value(tmp,  (void*) (unsigned long) board[row][col]);
+                }
+            }
+            if (tmp->count !=0) {
+                printf("(%d, %d), box wrong\n", row, col);
+                return false;
+            }
+            vector_free(tmp);
+            tmp = vector_copy(values);
+        }
+    }
+    printf ("\n");
+
+    return true;
+}
+
 bool solve(char board[9][9]) {
     // jede instanz von solve braucht eine eigene instanz von possibilities und board.
     vector* possibilities[9][9];
     vector* options;
+    printBoard(board);
+    char boardLocal[9][9];
 
-    int col, row, i;
+
+
+
+    int i, j;
+    for (i=0; i < 9; i++) {
+        for (j=0; j < 9; j++) {
+            boardLocal[i][j] = board[i][j];
+        }
+    }
+
     point pos;
     pos.x = 0;
     pos.y = 0;
 
-    getPossibilities(board, possibilities);
+    getPossibilities(boardLocal, possibilities);
 
-    if (nextCellToFill(board, possibilities, &pos))
+    if (nextCellToFill(boardLocal, possibilities, &pos))
     {
-        printf("position %d, %d, value %c \n", pos.x, pos.y, board[pos.y][pos.x]);
+        printf("position %d, %d, value %c \n", pos.x, pos.y, boardLocal[pos.y][pos.x]);
         // options is a vector
-        options = getNumberToInsert(board, possibilities, &pos);
+        options = getNumberToInsert(boardLocal, possibilities, &pos);
         vector_print_char(options);
         printf("%d", options->count);
         for (i = 0; i < options->count; i++) {
             // is that transformation correct?
-            board[pos.y][pos.x] = (char)(unsigned long) options->data[i];
-            printf("try %c. new value: %c\n", options->data[i], board[pos.y][pos.x]);
+            boardLocal[pos.y][pos.x] = (char)(unsigned long) options->data[i];
+            printf("try %c. new value: %c\n", options->data[i], boardLocal[pos.y][pos.x]);
             // solve cells that are currently empty
-            if (solve(board)== true)
+            if (solve(boardLocal)== true)
                 return true;
         }
         return false;

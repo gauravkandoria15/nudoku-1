@@ -80,13 +80,23 @@ bool vector_delete_element_with_value(vector* v, void* value){
     if (v == NULL)
         return false;
 
-    for (i = 0; i < v->size; i++) {
+    for (i = 0; i < v->count; i++) {
         if (v->data[i] == value) {
             vector_delete_element(v, i);
             return true;
         }
     }
     return false;
+}
+
+vector* vector_copy(vector * v) {
+    vector* target = vector_init(v->size);
+    int i;
+    for (i = 0; i < v->count; i ++) {
+        target->data[i] = v->data[i];
+    }
+    target->count = v->count;
+    return target;
 }
 
 
