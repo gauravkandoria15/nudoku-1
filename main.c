@@ -344,17 +344,17 @@ int main(){
 	init_board(EXAMPLE_STREAM, board);
     printBoard(board);
 
-	init_board(EXAMPLE_STREAM_SOLVED, boardSolved);
-    printBoard(boardSolved);
+	// init_board(EXAMPLE_STREAM_SOLVED, boardSolved);
+    // printBoard(boardSolved);
 
-	init_board(EXAMPLE_STREAM_WRONG_ROW, boardWrongRow);
-    printBoard(boardWrongRow);
+	// init_board(EXAMPLE_STREAM_WRONG_ROW, boardWrongRow);
+    // printBoard(boardWrongRow);
 
-	init_board(EXAMPLE_STREAM_WRONG_COL, boardWrongCol);
-    printBoard(boardWrongCol);
+	// init_board(EXAMPLE_STREAM_WRONG_COL, boardWrongCol);
+    // printBoard(boardWrongCol);
 
-	init_board(EXAMPLE_STREAM_WRONG_BOX, boardWrongBox);
-    printBoard(boardWrongBox);
+	// init_board(EXAMPLE_STREAM_WRONG_BOX, boardWrongBox);
+    // printBoard(boardWrongBox);
 
     // printf("%p \n", possibilities[8][8]);
     // fflush(stdout);
@@ -370,8 +370,8 @@ int main(){
 
     // nextCellToFill(board, pos);
     //
-    // printf("board %d\n", (int) checkBoard(board));
-    printf("board solved %d\n", (int) checkBoard(boardSolved));
+    printf("board %d\n", (int) boardSolved(board));
+    // printf("board solved %d\n", (int) checkBoard(boardSolved));
     // printf("board wrong row %d\n", (int) checkBoard(boardWrongRow));
     // printf("board wrong col %d\n", (int) checkBoard(boardWrongCol));
     // printf("board wrong box %d\n", (int) checkBoard(boardWrongBox));
