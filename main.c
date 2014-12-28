@@ -57,7 +57,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define GRID_LINE_DELTA		4
 #define GRID_COL_DELTA		2
 
-#define EXAMPLE_STREAM "4.....8.5.3..........7......2.....6......8.4......1.......6.3.7.5..2.....1.4......"
+#define EXAMPLE_STREAM "4.....8.5.3..........7......2.....6.....8.4......1.......6.32785..2.....1.4......"
 
 /* GLOBALS */
 bool g_useColor = true;
@@ -345,39 +345,33 @@ int main(){
 
     for (col = 0; col < 9; col++) {
         for (row = 0; row < 9; row++) {
-            if (board[col][row] == '.') {
-                possibilities[col][row] = vector_init(9);
+            if (board[row][col] == '.') {
+                possibilities[row][col] = vector_init(9);
                 // if (row == 8 && col == 8)
-                    printf("%p \n", possibilities[8][8]);
                 for (i = 0; i < 9; i++) {
 
-                    vector_add_element(possibilities[col][row], (void*) (unsigned long) chars[i]);
-                    // possibilities[col][row]->data[i] = (void*)(unsigned long) chars[i];
+                    vector_add_element(possibilities[row][col], (void*) (unsigned long) chars[i]);
+                    // possibilities[row][col]->data[i] = (void*)(unsigned long) chars[i];
 
                 }
             }
         }
     }
-    printf("%p \n", possibilities[8][8]);
-    fflush(stdout);
-    printf("%d \n", possibilities[8][8]->count);
-
-    for(i=0; i < possibilities[8][8]->count; i++) {
-        printf("%c ", (int)possibilities[8][8]->data[i]);
-    }
     printf("\n");
+
+    // printf("%p \n", possibilities[8][8]);
+    // fflush(stdout);
+    // printf("%d \n", possibilities[8][8]->count);
+    
+    vector_print_char(possibilities[8][8]);
 
 
     getPossibilities(board, possibilities);
 
-    for(i=0; i < possibilities[8][8]->count; i++) {
-        printf("%c ", (int)possibilities[8][8]->data[i]);
-    }
-    printf("\n");
-    fflush(stdout);
+    vector_print_char(possibilities[8][8]);
 
     // getPossibilities(board, );
-    Point* pos = malloc(sizeof(Point));
+    point* pos = malloc(sizeof(point));
 
     // nextCellToFill(board, pos);
     // solve(board);

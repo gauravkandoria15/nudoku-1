@@ -5,23 +5,25 @@ int main()
 	int i;
 	char c = 'a';
 
-	vector *v = vector_init(5);
+	vector *v = vector_init(9);
 	if (v)
 	{
-		for(i=0; i < 6; i++)
+		for(i=0; i < 9; i++)
 		{
-			if (!vector_add_element(v, (void*)(unsigned long)i))
+			if (!vector_add_element(v, (void*)(unsigned long) i + 49))
 				printf("error while adding element");
 		}
 
-        vector_delete_element_with_value(v, (void*)(unsigned long) 0);
+        // vector_delete_element_with_value(v, (void*)(unsigned long) 0);
 
-		printf("zahlen ausgeben: \n");
-		for(i=0; i < v->count; i++)
-		{
-			printf("%d\n", (int)v->data[i]);
-		}
+        vector_print_char(v);
 
+        // vector_delete_element_with_value(v, 1);
+        vector_delete_element_with_value(v, (void*)(unsigned long) '2');
+        vector_delete_element_with_value(v, (void*)(unsigned long) '1');
+        vector_delete_element_with_value(v, (void*)(unsigned long) '9');
+        vector_print_char(v);
+        // vector_delete_element_with_value(v, (void*)(unsigned long) '2');
 		vector_free(v);
 
 		v = vector_init(5);
@@ -40,7 +42,7 @@ int main()
 		printf("buchstaben ausgeben: \n");
 		for(i=0; i < v->count; i++)
 		{
-			printf("%c\n", (int)v->data[i]);
+			printf("%c\n", (int) (unsigned long) v->data[i]);
 		}
 		vector_free(v);
 	}

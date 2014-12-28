@@ -19,5 +19,7 @@ bool vector_add_element(vector* v, void *element);
 void vector_delete_element(vector* v, int index);
 void vector_free(vector *v);
 bool vector_delete_element_with_value(vector* v, void* value);
+void vector_print_char(vector* v);
+void vector_print_int(vector* v);
 
 #endif // vector_c
