@@ -161,6 +161,77 @@ bool boardSolved(char board[9][9]) {
     return true;
 }
 
+bool checkBoard(char board[9][9]) {
+    // check consistency of board.
+    int i, j, row,col;
+
+    char chars[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+    vector* values = vector_init(9);
+    vector* tmp;
+    for (i = 0; i < 9; i++) {
+        vector_add_element(values, (void*) (unsigned long) chars[i]);
+    }
+
+    tmp = vector_copy(values);
+
+
+    // check rows
+    printf("checking row: ");
+    for (row = 0; row < 9; row ++){
+        printf ("%d ", row);
+        for (col = 0; col < 9; col ++) {
+            // printf("deleting %c from:",board[row][col]);
+            // vector_print_char(tmp);
+            vector_delete_element_with_value(tmp, (void*) (unsigned long) board[row][col]);
+        }
+        if (tmp->count != 0){
+            printf("(%d, %d), row wrong\n", row, col);
+            return false;
+        }
+        vector_free(tmp);
+        tmp = vector_copy(values);
+    }
+    printf ("\n");
+
+    printf("checking col: ");
+    // check cols
+    for (col = 0; col < 9; col ++) {
+        printf ("%d ", col);
+        for (row = 0; row < 9; row ++){
+            vector_delete_element_with_value(tmp, (void*) (unsigned long) board[row][col]);
+        }
+        if (tmp->count != 0) {
+            printf("(%d, %d), col wrong\n", row, col);
+            return false;
+        }
+        vector_free(tmp);
+        tmp = vector_copy(values);
+    }
+    printf ("\n");
+
+    // check boxes
+    printf("checking box: ");
+    for (i = 0; i < 9; i += 3) {
+        for (j = 0; j < 9; j += 3) {
+            printf ("(%d,%d) ", i,j);
+            for (row = i; row < i + 3; row++) {
+                for (col = j; col < j + 3; col++) {
+                    vector_delete_element_with_value(tmp,  (void*) (unsigned long) board[row][col]);
+                }
+            }
+            if (tmp->count !=0) {
+                printf("(%d, %d), box wrong\n", row, col);
+                return false;
+            }
+            vector_free(tmp);
+            tmp = vector_copy(values);
+        }
+    }
+    printf ("\n");
+
+    return true;
+}
+
 bool solve(char board[9][9]) {
     // jede instanz von solve braucht eine eigene instanz von possibilities und board.
     vector* possibilities[9][9];
