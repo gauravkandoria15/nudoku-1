@@ -3,12 +3,20 @@
 
 bool debug = false;
 
+void copyBoard(char dstBoard[9][9], char srcBoard[9][9]) {
+    int row, col;
+    for (row = 0; row < 9; row ++) {
+        for (col = 0; col < 9; col ++) {
+            dstBoard[row][col] = srcBoard[row][col];
+        }
+    }
+    return;
+}
+
 void printBoard(char board[9][9]) {
     int i, j;
-    for (i = 0; i<9; i++)
-    {
-        for (j = 0; j<9; j++)
-        {
+    for (i = 0; i<9; i++) {
+        for (j = 0; j<9; j++) {
             printf("%c ", board[i][j]);
         }
         printf("\n");
@@ -49,6 +57,10 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* positi
             }
         }
     }
+
+    // if there is at least one cell with no legal value return false
+    if (least == 0)
+        return false;
 
     // check wheter there have been empty fields left.
     if (least != 10) 
@@ -236,9 +248,17 @@ bool solve(char board[9][9]) {
     // jede instanz von solve braucht eine eigene instanz von possibilities und board.
     vector* possibilities[9][9];
     vector* options;
-    printBoard(board);
+    // printBoard(board);
     char boardLocal[9][9];
 
+
+    // if the board is solved and the solution is valid return true
+    if (boardSolved(board)) {
+        // if (checkBoard(board))
+            return true;
+        // else 
+        //     return false;
+    }
 
 
 
@@ -255,24 +275,31 @@ bool solve(char board[9][9]) {
 
     getPossibilities(boardLocal, possibilities);
 
+
     if (nextCellToFill(boardLocal, possibilities, &pos))
     {
-        printf("position %d, %d, value %c \n", pos.x, pos.y, boardLocal[pos.y][pos.x]);
+        // printf("position %d, %d, value %c \n", pos.x, pos.y, boardLocal[pos.y][pos.x]);
         // options is a vector
         options = getNumberToInsert(boardLocal, possibilities, &pos);
-        vector_print_char(options);
-        printf("%d", options->count);
+        // vector_print_char(options);
+        // printf("%d", options->count);
         for (i = 0; i < options->count; i++) {
             // is that transformation correct?
             boardLocal[pos.y][pos.x] = (char)(unsigned long) options->data[i];
-            printf("try %c. new value: %c\n", options->data[i], boardLocal[pos.y][pos.x]);
+            // printf("try %c. at position %d, %d\n", options->data[i], pos.x, pos.y, boardLocal[pos.y][pos.x]);
             // solve cells that are currently empty
-            if (solve(boardLocal)== true)
+            if (solve(boardLocal)== true) {
+                // success!
+                // pass solution to top.
+                copyBoard(board, boardLocal);
+                // pass the good news to top layer.
                 return true;
+            }
         }
+        // return false, if in one cell all possibilities are illegal.
         return false;
     } else {
-        // return true, if there is nothing left to fill.
-        return true;
+        // return false, if there is at least one cell with no legal value.
+        return false;
     }
 }
