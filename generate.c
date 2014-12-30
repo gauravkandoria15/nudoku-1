@@ -24,11 +24,24 @@ void printBoard(char board[9][9]) {
     printf("\n");
 }
 
-bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* position) {
+vector* getNumberToInsert(char board[9][9], vector* possibilities[9][9], point* position){
+    // loop over everything that is still possible
+    // insert first one (something smarter is also possible)
+
+    // rank options
+
+    // return ranked options, best one first.
+    return possibilities[position->y][position->x];
+
+}
+
+
+bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* position, vector** options) {
 
     // return false if: no more possibilities to fill. this can be if the board is full, or there is no way to complete the board. 
     //search for the first unknown cell. can be chosen more intelligently
     int col, row, least;
+    vector_free(*options);
 
     least = 10;
 
@@ -39,6 +52,7 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* positi
                 if (possibilities[row][col]->count == 1) {
                     position->x = col;
                     position->y = row;
+                    *options = getNumberToInsert(board, possibilities, position);
                     return true;
                 }
 
@@ -63,22 +77,13 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* positi
         return false;
 
     // check wheter there have been empty fields left.
-    if (least != 10) 
+    if (least != 10) {
+        *options = getNumberToInsert(board, possibilities, position);
         return true;
+    }
 
     // if no empty field has been found return false.
     return false;
-}
-
-vector* getNumberToInsert(char board[9][9], vector* possibilities[9][9], point* position){
-    // loop over everything that is still possible
-    // insert first one (something smarter is also possible)
-
-    // rank options
-
-    // return ranked options, best one first.
-    return possibilities[position->y][position->x];
-
 }
 
 void getPossibilities(char board[9][9], vector* possibilities[9][9]){
@@ -247,7 +252,7 @@ bool checkBoard(char board[9][9]) {
 bool solve(char board[9][9]) {
     // jede instanz von solve braucht eine eigene instanz von possibilities und board.
     vector* possibilities[9][9];
-    vector* options;
+    vector* options = NULL;
     // printBoard(board);
     char boardLocal[9][9];
 
@@ -276,11 +281,11 @@ bool solve(char board[9][9]) {
     getPossibilities(boardLocal, possibilities);
 
 
-    if (nextCellToFill(boardLocal, possibilities, &pos))
+    if (nextCellToFill(boardLocal, possibilities, &pos, &options))
     {
         // printf("position %d, %d, value %c \n", pos.x, pos.y, boardLocal[pos.y][pos.x]);
         // options is a vector
-        options = getNumberToInsert(boardLocal, possibilities, &pos);
+        // options = getNumberToInsert(boardLocal, possibilities, &pos);
         // vector_print_char(options);
         // printf("%d", options->count);
         for (i = 0; i < options->count; i++) {
