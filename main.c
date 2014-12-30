@@ -382,7 +382,7 @@ int main(){
 
     printf("solved: %d\n", solve(board, boardSolved));
     // printf(", correct: %d\n", checkBoard(board));
-    printBoard(board);
+    printBoard(boardSolved);
 
     printf("original solution\n");
     printBoard(boardSolution);

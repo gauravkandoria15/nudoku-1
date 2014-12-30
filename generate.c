@@ -260,7 +260,7 @@ bool solve(char board[9][9], char boardSolved[9][9]) {
     // if the board is solved and the solution is valid return true
     if (boardIsSolved(board)) {
         // pass solution to top.
-        copyBoard(board, boardSolved);
+        copyBoard(boardSolved, board);
         return true;
     }
 
