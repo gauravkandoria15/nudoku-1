@@ -163,7 +163,7 @@ void getPossibilities(char board[9][9], vector* possibilities[9][9]){
 
 }
 
-bool boardSolved(char board[9][9]) {
+bool boardIsSolved(char board[9][9]) {
     // check if board is filled.
     int row,col;
 
@@ -249,7 +249,7 @@ bool checkBoard(char board[9][9]) {
     return true;
 }
 
-bool solve(char board[9][9]) {
+bool solve(char board[9][9], char boardSolved[9][9]) {
     // jede instanz von solve braucht eine eigene instanz von possibilities und board.
     vector* possibilities[9][9];
     vector* options = NULL;
@@ -258,11 +258,10 @@ bool solve(char board[9][9]) {
 
 
     // if the board is solved and the solution is valid return true
-    if (boardSolved(board)) {
-        // if (checkBoard(board))
-            return true;
-        // else 
-        //     return false;
+    if (boardIsSolved(board)) {
+        // pass solution to top.
+        copyBoard(board, boardSolved);
+        return true;
     }
 
 
@@ -293,10 +292,8 @@ bool solve(char board[9][9]) {
             boardLocal[pos.y][pos.x] = (char)(unsigned long) options->data[i];
             // printf("try %c. at position %d, %d\n", options->data[i], pos.x, pos.y, boardLocal[pos.y][pos.x]);
             // solve cells that are currently empty
-            if (solve(boardLocal)== true) {
+            if (solve(boardLocal, boardSolved)== true) {
                 // success!
-                // pass solution to top.
-                copyBoard(board, boardLocal);
                 // pass the good news to top layer.
                 return true;
             }

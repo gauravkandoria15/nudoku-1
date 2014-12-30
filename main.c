@@ -336,6 +336,7 @@ int main(){
 
     char board[9][9];
     char boardSolved[9][9];
+    char boardSolution[9][9];
     char boardWrongRow[9][9];
     char boardWrongCol[9][9];
     char boardWrongBox[9][9];
@@ -347,8 +348,8 @@ int main(){
     init_board(EXAMPLE_STREAM, board);
     printBoard(board);
 
-    init_board(EXAMPLE_STREAM_SOLVED, boardSolved);
-    // printBoard(boardSolved);
+    init_board(EXAMPLE_STREAM_SOLVED, boardSolution);
+    // printBoard(boardSolution);
 
     // init_board(EXAMPLE_STREAM_WRONG_ROW, boardWrongRow);
     // printBoard(boardWrongRow);
@@ -372,19 +373,19 @@ int main(){
     // nextCellToFill(board, pos);
     //
     // printf("board %d\n", (int) checkBoard(board));
-    // printf("board solved %d\n", (int) checkBoard(boardSolved));
+    // printf("board solved %d\n", (int) checkBoard(boardSolution));
     // printf("board wrong row %d\n", (int) checkBoard(boardWrongRow));
     // printf("board wrong col %d\n", (int) checkBoard(boardWrongCol));
     // printf("board wrong box %d\n", (int) checkBoard(boardWrongBox));
    
     // printf("
 
-    printf("solved: %d\n", solve(board));
+    printf("solved: %d\n", solve(board, boardSolved));
     // printf(", correct: %d\n", checkBoard(board));
     printBoard(board);
 
     printf("original solution\n");
-    printBoard(boardSolved);
+    printBoard(boardSolution);
 
     return EXIT_SUCCESS;
 }
