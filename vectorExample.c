@@ -44,6 +44,8 @@ int main()
         // vector_delete_element_with_value(v, (void*)(unsigned long) '2');
 		vector_free(v);
 
+        printf("contains a 2: %d \n", vector_contains_value(v2, (void*)(unsigned long) '3'));
+
 		v = vector_init(5);
 		for(i=0; i < v->count; i++)
 		{

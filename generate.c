@@ -35,13 +35,15 @@ vector* getNumberToInsert(char board[9][9], vector* possibilities[9][9], point* 
 
 }
 
+bool findWellLocatedNumbers(char boardSnipplet[9], vector* possibilitiesSnipplet[9], int *least, int *index){}
 
-bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* position, vector** options) {
+bool nextCellToFill(char board[9][9], vector* possibilities[9][9], options* options) {
 
     // return false if: no more possibilities to fill. this can be if the board is full, or there is no way to complete the board. 
     //search for the first unknown cell. can be chosen more intelligently
-    int col, row, least;
-    vector_free(*options);
+    int col, row, i, least, nFound;
+    int count[9];
+
 
     least = 10;
 
@@ -50,21 +52,27 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* positi
             if (board[row][col] == '.') {
                 // if there is only one possibility left, choose it immediatly.
                 if (possibilities[row][col]->count == 1) {
-                    position->x = col;
-                    position->y = row;
-                    *options = getNumberToInsert(board, possibilities, position);
+                    options->count = 1;
+                    options->pos[0].x = col;
+                    options->pos[0].y = row;
+                    options->val[0] =  (char) (unsigned long) possibilities[row][col]->data[0];
                     return true;
                 }
 
                 // find position with the minimal number of possibilities.
                 if (possibilities[row][col]->count < least) {
                     least = possibilities[row][col]->count;
-                    position->x = col;
-                    position->y = row;
+                    options->count = possibilities[row][col]->count;
+                    for (i = 0; i < options->count; i++) {
+                        options->pos[i].x = col;
+                        options->pos[i].y = row;
+                        options->val[i] = (char) ((unsigned long) possibilities[row][col]->data[i]);
+                    }
 
                     if (debug) {
+                        printf("position %d, %d possible value %c", options->pos[i].x, options->pos[i].y, options->val[i]);
                         printf("least %d, pos %d,%d \n",least, row, col);
-                        printf("test %p\n",position);
+                        // printf("test %p\n",options->pos[0]);
                         fflush(stdout);
                     }
                 }
@@ -72,18 +80,50 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* positi
         }
     }
 
-    // if there is at least one cell with no legal value return false
-    if (least == 0)
+    // if there is at least one cell with no legal value, or if no empty cell is left return false
+    if (least == 0 || least == 10)
         return false;
 
-    // check wheter there have been empty fields left.
-    if (least != 10) {
-        *options = getNumberToInsert(board, possibilities, position);
-        return true;
-    }
+    // now check if there are numbers, that are only allowed in few posistions
+    // check rows first
+    for (row = 0; row < 9; row++){
+        // reset counter.
+        for (i = 0; i < 9; i++){
+            count[i] = 0;
+        }
 
-    // if no empty field has been found return false.
-    return false;
+        // count the occurences of the possibility of each number in the row 'row'.
+        for (col = 0; col < 9; col++){
+            if (board[row][col] == '.') {
+                for (i = 0; i < possibilities[row][col]->count; i++) {
+                    // add one in the corresponding slot.
+                    count[ (int) (possibilities[row][col]->data[i] - '0')] ++;
+                }
+                
+            }
+        }
+
+        // check which entry has the lowest count
+        for (i = 0; i < 9; i++) {
+            // check if there is a better option.
+            if (0 < count[i] && count[i] < least){
+                nFound = 0;
+                least = count[i];
+                options->count = count[i];
+                // find the positions in the row where the possibilities occured
+                for (col = 0; col < 9; col++) {
+                    // possibilities is only initialized where board is '.', therefore check fist.
+                    if (board[row][col] == '.' && vector_contains_value(possibilities[row][col], (void*) (unsigned long) (i + '0'))) {
+                        options->pos[nFound].x = col;
+                        options->pos[nFound].y = row;
+                        options->val[nFound] = i + '0';
+                        nFound++;
+                    }
+                }
+            }
+        }
+    }
+    return true;
 }
 
 void getPossibilities(char board[9][9], vector* possibilities[9][9]){
@@ -252,7 +292,7 @@ bool checkBoard(char board[9][9]) {
 bool solve(char board[9][9], char boardSolved[9][9]) {
     // jede instanz von solve braucht eine eigene instanz von possibilities und board.
     vector* possibilities[9][9];
-    vector* options = NULL;
+    options options;
     // printBoard(board);
     char boardLocal[9][9];
 
@@ -273,23 +313,19 @@ bool solve(char board[9][9], char boardSolved[9][9]) {
         }
     }
 
-    point pos;
-    pos.x = 0;
-    pos.y = 0;
-
     getPossibilities(boardLocal, possibilities);
 
 
-    if (nextCellToFill(boardLocal, possibilities, &pos, &options))
+    if (nextCellToFill(boardLocal, possibilities, &options))
     {
         // printf("position %d, %d, value %c \n", pos.x, pos.y, boardLocal[pos.y][pos.x]);
         // options is a vector
         // options = getNumberToInsert(boardLocal, possibilities, &pos);
         // vector_print_char(options);
         // printf("%d", options->count);
-        for (i = 0; i < options->count; i++) {
+        for (i = 0; i < options.count; i++) {
             // is that transformation correct?
-            boardLocal[pos.y][pos.x] = (char)(unsigned long) options->data[i];
+            boardLocal[options.pos[i].y][options.pos[i].x] = options.val[i];
             // printf("try %c. at position %d, %d\n", options->data[i], pos.x, pos.y, boardLocal[pos.y][pos.x]);
             // solve cells that are currently empty
             if (solve(boardLocal, boardSolved)== true) {

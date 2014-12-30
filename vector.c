@@ -99,6 +99,23 @@ vector* vector_copy(vector * v) {
     return target;
 }
 
+bool vector_contains_value(vector *v, void* value) {
+    int i;
+    for (i = 0; i < v->count; i++){
+        if (v->data[i] == value)
+            return true;
+    }
+    return false;
+}
+
+int vector_find(vector *v, void* value) {
+    int i;
+    for (i = 0; i < v->count; i++){
+        if (v->data[i] == value)
+            return i;
+    }
+    return -1;
+}
 
 void vector_free(vector *v)
 {

@@ -8,11 +8,16 @@
 
 char* generate();
 
-
 typedef struct point {
     int x;
     int y;
 } point;
+
+typedef struct options {
+    point pos[9];
+    char val[9];
+    int count;
+} options;
 
 struct possibilities {
     char possibleValues[9][9][9];
@@ -21,7 +26,7 @@ struct possibilities {
 typedef struct possibilities Possibility;
 
 bool solve(char board[9][9], char boardSolved[9][9]);
-bool nextCellToFill(char board[9][9], vector* possibilities[9][9], point* position, vector** options);
+bool nextCellToFill(char board[9][9], vector* possibilities[9][9], options* options);
 void getPossibilities(char board[9][9], vector* possibilities[9][9]);
 void printBoard(char board[9][9]);
 bool checkBoard(char board[9][9]);

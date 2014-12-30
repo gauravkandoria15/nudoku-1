@@ -39,7 +39,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <unistd.h> /* getopt */
 #include <ncurses.h>
+#include <time.h>
 #include "generate.h"
+#
 
 
 /* DEFINES */
@@ -337,13 +339,13 @@ int main(){
     char board[9][9];
     char boardSolved[9][9];
     char boardSolution[9][9];
-    char boardWrongRow[9][9];
-    char boardWrongCol[9][9];
-    char boardWrongBox[9][9];
+    // char boardWrongRow[9][9];
+    // char boardWrongCol[9][9];
+    // char boardWrongBox[9][9];
+   
+    clock_t start, stop;
 
     // vector* possibilities[9][9];
-
-    int row,col,i, j;
 
     init_board(EXAMPLE_STREAM, board);
     printBoard(board);
@@ -368,7 +370,6 @@ int main(){
     // getPossibilities(board, possibilities);
 
     // getPossibilities(board, );
-    point* pos = malloc(sizeof(point));
 
     // nextCellToFill(board, pos);
     //
@@ -380,7 +381,10 @@ int main(){
    
     // printf("
 
-    printf("solved: %d\n", solve(board, boardSolved));
+    start = clock();
+    printf("solved: %d", solve(board, boardSolved));
+    stop = clock();
+    printf(" in %fs \n", (float) (stop-start)/CLOCKS_PER_SEC);
     // printf(", correct: %d\n", checkBoard(board));
     printBoard(boardSolved);
 
