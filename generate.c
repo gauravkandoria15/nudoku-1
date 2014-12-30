@@ -35,7 +35,46 @@ vector* getNumberToInsert(char board[9][9], vector* possibilities[9][9], point* 
 
 }
 
-bool findWellLocatedNumbers(char boardSnipplet[9], vector* possibilitiesSnipplet[9], int *least, int *index){}
+bool findWellLocatedNumbers(char* boardSnipplet[9], vector** possibilitiesSnipplet[9], int *least, options* options){
+    // now check if there are numbers, that are only allowed in few posistions
+    int elementNumber, nFound, i;
+    int count[9];
+
+    // count the occurences of the possibility of each number in the row 'row'.
+    for (elementNumber = 0; elementNumber < 9; elementNumber++){
+        if (*boardSnipplet[elementNumber] == '.') {
+            for (i = 0; i < (*possibilitiesSnipplet[elementNumber])->count; i++) {
+                // add one in the corresponding slot.
+                count[ (int) ((*possibilitiesSnipplet[elementNumber])->data[i] - '0')] ++;
+            }
+
+        }
+    }
+
+    // check which entry has the lowest count
+    for (i = 0; i < 9; i++) {
+        // check if there is a better option.
+        if (0 < count[i] && count[i] < *least){
+            nFound = 0;
+            *least = count[i];
+            options->count = count[i];
+            // find the positions in the row where the possibilities occured
+            for (elementNumber = 0; elementNumber < 9; elementNumber++) {
+                // possibilities is only initialized where board is '.', therefore check fist.
+                if (*boardSnipplet[elementNumber] == '.' && vector_contains_value(*possibilitiesSnipplet[elementNumber], (void*) (unsigned long) (i + '0'))) {
+                    options->pos[nFound].x = elementNumber;
+                    options->pos[nFound].y = 0;
+                    options->val[nFound] = i + '0';
+                    nFound++;
+                }
+            }
+        }
+    }
+    if (nFound == 0)
+        return false;
+    else
+        return true;
+}
 
 bool nextCellToFill(char board[9][9], vector* possibilities[9][9], options* options) {
 
@@ -99,7 +138,7 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], options* opti
                     // add one in the corresponding slot.
                     count[ (int) (possibilities[row][col]->data[i] - '0')] ++;
                 }
-                
+
             }
         }
 
