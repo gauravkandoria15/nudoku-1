@@ -59,8 +59,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define GRID_LINE_DELTA		4
 #define GRID_COL_DELTA		2
 
-#define EXAMPLE_STREAM            "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"
-#define EXAMPLE_STREAM_SOLVED     "417369825632158947958724316825437169791586432346912758289643571573291684164875293"
+// #define EXAMPLE_STREAM            "4.....8.5.3..........7......2.....6.....8.4......1.......6.3.7.5..2.....1.4......"
+#define EXAMPLE_STREAM            "..1.9..37....1.....94..2.651..............2..7..258....7516..2........9.6..87...4"
+// #define EXAMPLE_STREAM_SOLVED     "417369825632158947958724316825437169791586432346912758289643571573291684164875293"
+#define EXAMPLE_STREAM_SOLVED     "281596437567413982394782165142637859856941273739258641975164328418325796623879514"
 #define EXAMPLE_STREAM_WRONG_ROW  "147369825632158947958724316825437169791586432346912758289643571573291684164875293"
 #define EXAMPLE_STREAM_WRONG_COL  "617369825432158947958724316825437169791586432346912758289643571573291684164875293"
 #define EXAMPLE_STREAM_WRONG_BOX  "517369824632158947958724316825437169791586432346912758289643571473291685164875293"
@@ -385,7 +387,7 @@ int main(){
     printf("solved: %d", solve(board, boardSolved));
     stop = clock();
     printf(" in %fs \n", (float) (stop-start)/CLOCKS_PER_SEC);
-    // printf(", correct: %d\n", checkBoard(board));
+    printf(", correct: %d\n", checkBoard(boardSolved));
     printBoard(boardSolved);
 
     printf("original solution\n");

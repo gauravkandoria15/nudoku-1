@@ -9,6 +9,10 @@ run:
 clean:
 	rm output
 
+debug:
+	gdb ./output
+
+
 
 	#gcc -c generate.c generate.o 
 

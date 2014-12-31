@@ -35,10 +35,13 @@ vector* getNumberToInsert(char board[9][9], vector* possibilities[9][9], point* 
 
 }
 
-bool findWellLocatedNumbers(char* boardSnipplet[9], vector** possibilitiesSnipplet[9], int *least, options* options){
+bool findWellLocatedNumbers(char* boardSnipplet[9], vector** possibilitiesSnipplet[9], options* options, int *least){
     // now check if there are numbers, that are only allowed in few posistions
     int elementNumber, nFound, i;
     int count[9];
+    bool foundBetterSolution = false;
+
+    // printf("%d\n", *least);
 
     // count the occurences of the possibility of each number in the row 'row'.
     for (elementNumber = 0; elementNumber < 9; elementNumber++){
@@ -55,9 +58,11 @@ bool findWellLocatedNumbers(char* boardSnipplet[9], vector** possibilitiesSnippl
     for (i = 0; i < 9; i++) {
         // check if there is a better option.
         if (0 < count[i] && count[i] < *least){
+            foundBetterSolution = true;
             nFound = 0;
             *least = count[i];
             options->count = count[i];
+            // printf("%d ", options->count);
             // find the positions in the row where the possibilities occured
             for (elementNumber = 0; elementNumber < 9; elementNumber++) {
                 // possibilities is only initialized where board is '.', therefore check fist.
@@ -66,14 +71,14 @@ bool findWellLocatedNumbers(char* boardSnipplet[9], vector** possibilitiesSnippl
                     options->pos[nFound].y = 0;
                     options->val[nFound] = i + '0';
                     nFound++;
+                    // if a clear solution is found, take it.
+                    if (count[i] == 1)
+                        return foundBetterSolution;
                 }
             }
         }
     }
-    if (nFound == 0)
-        return false;
-    else
-        return true;
+    return foundBetterSolution;
 }
 
 bool nextCellToFill(char board[9][9], vector* possibilities[9][9], options* options) {
@@ -83,20 +88,31 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], options* opti
     int col, row, i, least, nFound;
     int count[9];
 
+    char* boardSnipplet[9];
+    vector** possibilitiesSnipplet[9];
+
 
     least = 10;
 
     for (col=0; col < 9; col++) {
         for (row=0; row < 9; row++) {
             if (board[row][col] == '.') {
-                // if there is only one possibility left, choose it immediatly.
-                if (possibilities[row][col]->count == 1) {
-                    options->count = 1;
-                    options->pos[0].x = col;
-                    options->pos[0].y = row;
-                    options->val[0] =  (char) (unsigned long) possibilities[row][col]->data[0];
-                    return true;
+                printf("%d ", possibilities[row][col]->count);
+                // if there is no possibility to fill this gap return false immediately.
+                if (possibilities[row][col]->count == 0) {
+                    printf("bad branch\n");
+                    return false;
                 }
+                // if there is only one possibility left, choose it immediatly.
+                // if (possibilities[row][col]->count == 1) {
+                //     least =1;
+                //     printf("good branch\n");
+                //     options->count = 1;
+                //     options->pos[0].x = col;
+                //     options->pos[0].y = row;
+                //     options->val[0] =  (char) (unsigned long) possibilities[row][col]->data[0];
+                //     return true;
+                // }
 
                 // find position with the minimal number of possibilities.
                 if (possibilities[row][col]->count < least) {
@@ -112,57 +128,78 @@ bool nextCellToFill(char board[9][9], vector* possibilities[9][9], options* opti
                         printf("position %d, %d possible value %c", options->pos[i].x, options->pos[i].y, options->val[i]);
                         printf("least %d, pos %d,%d \n",least, row, col);
                         // printf("test %p\n",options->pos[0]);
-                        fflush(stdout);
                     }
                 }
             }
         }
     }
+
+    printf("least: %d\n", least);
 
     // if there is at least one cell with no legal value, or if no empty cell is left return false
     if (least == 0 || least == 10)
         return false;
 
+
+
     // now check if there are numbers, that are only allowed in few posistions
     // check rows first
+    //
+    
+/*
     for (row = 0; row < 9; row++){
-        // reset counter.
-        for (i = 0; i < 9; i++){
-            count[i] = 0;
-        }
-
-        // count the occurences of the possibility of each number in the row 'row'.
         for (col = 0; col < 9; col++){
-            if (board[row][col] == '.') {
-                for (i = 0; i < possibilities[row][col]->count; i++) {
-                    // add one in the corresponding slot.
-                    count[ (int) (possibilities[row][col]->data[i] - '0')] ++;
-                }
-
-            }
+            boardSnipplet[col] = &board[row][col];
+            possibilitiesSnipplet[col] = &possibilities[row][col];
         }
 
-        // check which entry has the lowest count
-        for (i = 0; i < 9; i++) {
-            // check if there is a better option.
-            if (0 < count[i] && count[i] < least){
-                nFound = 0;
-                least = count[i];
-                options->count = count[i];
-                // find the positions in the row where the possibilities occured
-                for (col = 0; col < 9; col++) {
-                    // possibilities is only initialized where board is '.', therefore check fist.
-                    if (board[row][col] == '.' && vector_contains_value(possibilities[row][col], (void*) (unsigned long) (i + '0'))) {
-                        options->pos[nFound].x = col;
-                        options->pos[nFound].y = row;
-                        options->val[nFound] = i + '0';
-                        nFound++;
-                    }
-                }
+        if (findWellLocatedNumbers(boardSnipplet, possibilitiesSnipplet, options, &least )){
+            // transform from indices of the row to position
+            for (i = 0; i < options->count; i++){
+                options->pos[i].y = row;
+                // options->pos[i].x = options->pos[i].x;
             }
+            printf("%d, pos: %d, %d val: %c\n", options->count, options->pos[0].x, options->pos[0].y, options->val[0]);
         }
-    }
-    return true;
+    }*/
+       for (row = 0; row < 9; row++){
+// reset counter.
+for (i = 0; i < 9; i++){
+count[i] = 0;
+}
+
+// count the occurences of the possibility of each number in the row 'row'.
+for (col = 0; col < 9; col++){
+if (board[row][col] == '.') {
+for (i = 0; i < possibilities[row][col]->count; i++) {
+// add one in the corresponding slot.
+count[ (int) (possibilities[row][col]->data[i] - '0')] ++;
+}
+
+}
+}
+
+// check which entry has the lowest count
+for (i = 0; i < 9; i++) {
+// check if there is a better option.
+if (0 < count[i] && count[i] < least){
+nFound = 0;
+least = count[i];
+options->count = count[i];
+// find the positions in the row where the possibilities occured
+for (col = 0; col < 9; col++) {
+// possibilities is only initialized where board is '.', therefore check fist.
+if (board[row][col] == '.' && vector_contains_value(possibilities[row][col], (void*) (unsigned long) (i + '0'))) {
+options->pos[nFound].x = col;
+options->pos[nFound].y = row;
+options->val[nFound] = i + '0';
+nFound++;
+}
+}
+}
+}
+}
+return true;
 }
 
 void getPossibilities(char board[9][9], vector* possibilities[9][9]){
@@ -328,13 +365,56 @@ bool checkBoard(char board[9][9]) {
     return true;
 }
 
+
+void refreshDependentPossibilities(vector* possibilities[9][9], char value, int row, int col) {
+    int currRow, currCol;
+    // delete row:
+    for (currCol= 0; currCol < 9; currCol++) {
+        vector_delete_element_with_value(possibilities[row][currCol], (void*) (unsigned long) value);
+    }
+
+    // delete col
+    for (currRow= 0; currRow < 9; currRow++) {
+        vector_delete_element_with_value(possibilities[currRow][col], (void*) (unsigned long) value);
+    }
+    // delete box
+    row = (row/3) *3;
+    col = (col/3) *3;
+    for (currRow = row; currRow < row + 3; currRow ++) {
+        for (currCol = col; currCol < col + 3; currCol ++) {
+            vector_delete_element_with_value(possibilities[currRow][currCol], (void*) (unsigned long) value);
+        }
+    }
+
+}
+
+bool fillUnambiguousImmediately(char board[9][9], vector* possibilities[9][9]) {
+    // doesn't work ... seems to lead to wrong solutions.
+    int row, col;
+    for (row = 0; row < 9; row++) {
+        for (col = 0; col < 9; col++) {
+            if (board[row][col] == '.') {
+                if (possibilities[row][col]->count == 1) {
+                    board[row][col] = (char) possibilities[row][col]->data[0];
+                    refreshDependentPossibilities(possibilities, board[row][col], row, col);
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+
 bool solve(char board[9][9], char boardSolved[9][9]) {
     // jede instanz von solve braucht eine eigene instanz von possibilities und board.
     vector* possibilities[9][9];
     options options;
-    // printBoard(board);
+    int i, j;
     char boardLocal[9][9];
 
+
+    // printBoard(board);
 
     // if the board is solved and the solution is valid return true
     if (boardIsSolved(board)) {
@@ -344,16 +424,22 @@ bool solve(char board[9][9], char boardSolved[9][9]) {
     }
 
 
+    getPossibilities(board, possibilities);
 
-    int i, j;
     for (i=0; i < 9; i++) {
         for (j=0; j < 9; j++) {
             boardLocal[i][j] = board[i][j];
         }
     }
 
-    getPossibilities(boardLocal, possibilities);
+    // fill unambigous cells immediately.
+    while (fillUnambiguousImmediately(boardLocal, possibilities));
 
+    if (boardIsSolved(boardLocal)){
+        printf("ppft");
+        copyBoard(boardSolved, boardLocal);
+        return checkBoard(boardLocal);
+    }
 
     if (nextCellToFill(boardLocal, possibilities, &options))
     {
@@ -376,6 +462,7 @@ bool solve(char board[9][9], char boardSolved[9][9]) {
         // return false, if in one cell all possibilities are illegal.
         return false;
     } else {
+        // printf("nothing left to fill");
         // return false, if there is at least one cell with no legal value.
         return false;
     }
