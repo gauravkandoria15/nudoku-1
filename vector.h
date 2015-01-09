@@ -1,10 +1,7 @@
-#ifndef vector_c
-#define vector_c
+#ifndef VECTOR_H
+#define VECTOR_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 
 #define MULTIPLIER 2
 
@@ -24,4 +21,4 @@ void vector_print_int(vector* v);
 bool vector_contains_value(vector *v, void* value);
 vector* vector_copy(vector* v);
 
-#endif // vector_c
+#endif // VECTOR_H
